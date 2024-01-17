@@ -23,6 +23,13 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
+#include <stdlib.h>
+
+PUBLIC int rand(){
+	static int seed = 0;
+	seed = (seed * 1103515245 + 12345) % 2147483648;
+	return seed;
+}
 
 /**
  * @brief Schedules a process to execution.
@@ -68,7 +75,7 @@ PUBLIC void yieldLottery(void){
 	int totalTickets = 0;
 	int ticket = 0;
 	int winner = 0;
-	const int MINPRIO = 19; /* Use to make all the prio >= 0 */
+	const int MAXPRIO = 20; /* Use to make all the prio >= 0 */
 
 	/* Choose a process to run next. */
 	next = IDLE;
@@ -78,7 +85,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += p->nice+MINPRIO;
+		totalTickets += MAXPRIO + 1 - p->nice; /* Range 1 à 40*/
 	}
 
 	ticket = rand() % totalTickets;
@@ -89,7 +96,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		winner += p->nice+MINPRIO;
+		winner += MAXPRIO - p->nice + 1;
 
 		if (winner >= ticket){
 			next = p;
@@ -183,7 +190,7 @@ PUBLIC void yieldFifo(void)
 
 /* current scheduler fonction use for the yield */
 /* default scheduler is FIFO Scheduling (First In First Out) */
-void (*currentScheduler)(void) = &yieldFifo;
+void (*currentScheduler)(void) = &yielPriority;
 
 /**
  * @brief Yields the processor.
