@@ -68,6 +68,7 @@ PUBLIC void yieldLottery(void){
 	int totalTickets = 0;
 	int ticket = 0;
 	int winner = 0;
+	const int MINPRIO = 19; /* Use to make all the prio >= 0 */
 
 	/* Choose a process to run next. */
 	next = IDLE;
@@ -77,7 +78,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += p->nice;
+		totalTickets += p->nice+MINPRIO;
 	}
 
 	ticket = rand() % totalTickets;
@@ -88,7 +89,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		winner += p->nice;
+		winner += p->nice+MINPRIO;
 
 		if (winner >= ticket){
 			next = p;
