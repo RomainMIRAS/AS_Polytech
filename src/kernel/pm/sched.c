@@ -59,6 +59,44 @@ PUBLIC void resume(struct process *proc)
 		sched(proc);
 }
 
+PUBLIC void yielPriority(void)
+{
+	struct process *p;    /* Working process.     */
+	struct process *min; /* min prio process to run. */
+
+	/* Choose a process to run next. */
+	min = IDLE;
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		/*
+		 * Process with higher
+		 * priority found.
+		 */
+		if (p->nice > min->nice)
+		{	
+			min = p;
+		}
+
+		/*
+		 * Increment priority
+		 * of process.
+		 */
+		else
+			p->priority++;
+	}
+
+	/* Switch to next process. */
+	min->priority = PRIO_USER;
+	min->state = PROC_RUNNING;
+	min->counter = PROC_QUANTUM;
+	if (curr_proc != min)
+		switch_to(min);
+}
+
 /**
  * @brief Yields the processor.
  */
