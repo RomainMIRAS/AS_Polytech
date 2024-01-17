@@ -24,8 +24,6 @@
 #include <nanvix/pm.h>
 #include <signal.h>
 
-void (*currentScheduler)(void) = &yieldFifo;
-
 /**
  * @brief Schedules a process to execution.
  *
@@ -103,10 +101,11 @@ PUBLIC void yieldFifo(void)
 		switch_to(next);
 }
 
+void (*currentScheduler)(void) = &yieldFifo;
+
 void yield(void){
 
 	struct process *p;    /* Working process.     */
-	struct process *next; /* Next process to run. */
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)

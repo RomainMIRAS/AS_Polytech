@@ -53,3 +53,6 @@ tools/run/bochsrc.txt
 # Exceptions.
 !doc/paper/img/*.pdf
 !doc/paper/*.pdf
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+.vscode/launch.json
