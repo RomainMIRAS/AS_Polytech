@@ -76,17 +76,10 @@ PUBLIC void yielPriority(void)
 		 * Process with higher
 		 * priority found.
 		 */
-		if (p->nice > min->nice)
+		if (p->nice < min->nice)
 		{	
 			min = p;
 		}
-
-		/*
-		 * Increment priority
-		 * of process.
-		 */
-		else
-			p->priority++;
 	}
 
 	/* Switch to next process. */
