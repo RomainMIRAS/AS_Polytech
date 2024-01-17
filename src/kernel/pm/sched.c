@@ -59,6 +59,49 @@ PUBLIC void resume(struct process *proc)
 		sched(proc);
 }
 
+PUBLIC void yieldLottery(void){
+	struct process *p;    /* Working process.     */
+	struct process *next; /* Next process to run. */
+	int totalTickets = 0;
+	int ticket = 0;
+	int winner = 0;
+
+	/* Choose a process to run next. */
+	next = IDLE;
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		totalTickets += p->nice;
+	}
+
+	ticket = rand() % totalTickets;
+
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		winner += p->nice;
+
+		if (winner >= ticket){
+			next = p;
+			break;
+		}
+	}
+
+	/* Switch to next process. */
+	next->priority = PRIO_USER;
+	next->state = PROC_RUNNING;
+	next->counter = PROC_QUANTUM;
+	if (curr_proc != next)
+		switch_to(next);
+}
+
+
 PUBLIC void yielPriority(void)
 {
 	struct process *p;    /* Working process.     */
