@@ -59,6 +59,9 @@ PUBLIC void resume(struct process *proc)
 		sched(proc);
 }
 
+/**
+ * @brief Yields the processor with Lottery Scheduling.
+ */
 PUBLIC void yieldLottery(void){
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
@@ -101,7 +104,9 @@ PUBLIC void yieldLottery(void){
 		switch_to(next);
 }
 
-
+/**
+ * @brief Yields the processor with Priority Scheduling.
+ */
 PUBLIC void yielPriority(void)
 {
 	struct process *p;    /* Working process.     */
@@ -134,7 +139,7 @@ PUBLIC void yielPriority(void)
 }
 
 /**
- * @brief Yields the processor.
+ * @brief Yields the processor with FIFO Scheduling (First In First Out).
  */
 PUBLIC void yieldFifo(void)
 {
@@ -175,8 +180,13 @@ PUBLIC void yieldFifo(void)
 		switch_to(next);
 }
 
+/* current scheduler fonction use for the yield */
+/* default scheduler is FIFO Scheduling (First In First Out) */
 void (*currentScheduler)(void) = &yieldFifo;
 
+/**
+ * @brief Yields the processor.
+ */
 PUBLIC void yield(void){
 
 	struct process *p;    /* Working process.     */
@@ -203,6 +213,9 @@ PUBLIC void yield(void){
 	(*currentScheduler)();
 }
 
+/**
+ * @brief Sets the current scheduler.
+*/
 void setCurrentScheduler(void (*scheduler)(void)){
 	currentScheduler = scheduler;
 }
