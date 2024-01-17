@@ -103,7 +103,7 @@ PUBLIC void yieldFifo(void)
 
 void (*currentScheduler)(void) = &yieldFifo;
 
-void yield(void){
+PUBLIC void yield(void){
 
 	struct process *p;    /* Working process.     */
 
@@ -127,4 +127,8 @@ void yield(void){
 	}
 
 	(*currentScheduler)();
+}
+
+void setCurrentScheduler(void (*scheduler)(void)){
+	currentScheduler = scheduler;
 }
