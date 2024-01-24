@@ -112,6 +112,21 @@ PUBLIC void yieldMultipleQueue(void)
 	pmin = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
+		/* Match the process with the correct scheduling class*/
+		if(p->nice < -20){
+			p->scheduling_class = 1;
+		}
+		else if((pmin->nice >= -20) && (pmin->nice < 0)) //Class 2
+		{
+			p->scheduling_class = 2;
+		}
+		else if((pmin->nice >= 0) && (pmin->nice < 20)){ //Class 3
+			p->scheduling_class = 3;
+		}
+		else{	//Class 4
+			p->scheduling_class = 4;
+		}
+
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
@@ -140,20 +155,8 @@ PUBLIC void yieldMultipleQueue(void)
 	/* Switch to next process. */
 	pmin->priority = PRIO_USER;
 	pmin->state = PROC_RUNNING;
-	if(pmin->nice < -20)	//Class 1
-	{
-		pmin->counter = 2;
-	}
-	else if((pmin->nice >= -20) && (pmin->nice < 0)) //Class 2
-	{
-		pmin->counter = 2 << 1;
-	}
-	else if((pmin->nice >= 0) && (pmin->nice < 20)){ //Class 3
-		pmin->counter = 2 << 2;
-	}
-	else{	//Class 4
-		pmin->counter = 2 << 3;
-	}
+	pmin->counter = (1 << pmin->scheduling_class) * PROC_QUANTUM;
+	pmin->scheduling_class++;
 	if (curr_proc != pmin)
 		switch_to(pmin);
 }
@@ -200,7 +203,7 @@ PUBLIC void yieldFifo(void)
 		switch_to(next);
 }
 
-void (*currentScheduler)(void) = &yieldFifo;
+void (*currentScheduler)(void) = &yieldMultipleQueue;
 
 PUBLIC void yield(void)
 {

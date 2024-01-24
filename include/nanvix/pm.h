@@ -204,6 +204,7 @@
     	unsigned alarm;          /**< Alarm.                  */
 		struct process *next;    /**< Next process in a list. */
 		struct process **chain;  /**< Sleeping chain.         */
+		int scheduling_class;	 /**< Scheduling class determined by nice value for Multiple Queue (A été rajouté) */
 		/**@}*/
 	};
 
