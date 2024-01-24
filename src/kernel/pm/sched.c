@@ -91,6 +91,7 @@ PUBLIC void yieldLottery(void){
 	int ticket = 0;
 	int winner = 0;
 	const int maxPrio = niceMax(); /* Use to make all the prio >= 0 */
+	
 	/* Choose a process to run next. */
 	winnerProcess = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
@@ -99,6 +100,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
+		winnerProcess = p;
 		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à MaxNice + |MinNice| + 1*/
 	}
 
@@ -112,9 +114,8 @@ PUBLIC void yieldLottery(void){
 
 		winner += maxPrio - p->nice + 1;
 
-		if (winner >= ticket){
+		if (winner >= ticket && winner <= ticket - maxPrio - p->nice + 1){
 			winnerProcess = p;
-			break;
 		}
 	}
 
@@ -218,7 +219,7 @@ PUBLIC void yieldFifo(void)
 
 /* current scheduler fonction use for the yield */
 /* default scheduler is FIFO Scheduling (First In First Out) */
-void (*currentScheduler)(void) = &yielPriority;
+void (*currentScheduler)(void) = &yieldLottery;
 
 /**
  * @brief Yields the processor.
