@@ -61,7 +61,7 @@ PUBLIC void resume(struct process *proc)
 
 PUBLIC void yielPriority(void)
 {
-	struct process *p;    /* Working process.     */
+	struct process *p;	 /* Working process.     */
 	struct process *min; /* min prio process to run. */
 
 	/* Choose a process to run next. */
@@ -77,8 +77,21 @@ PUBLIC void yielPriority(void)
 		 * priority found.
 		 */
 		if (p->nice < min->nice)
-		{	
+		{
+			min->counter++;
 			min = p;
+		}
+		else if (p->nice == min->nice)
+		{
+			p->counter++;
+			if (p->counter > min->counter)
+			{
+				min = p;
+			}
+		}
+		else
+		{
+			p->counter++;
 		}
 	}
 
@@ -90,12 +103,69 @@ PUBLIC void yielPriority(void)
 		switch_to(min);
 }
 
+PUBLIC void yieldMultipleQueue(void)
+{
+	struct process *p;	 /* Working process.     */
+	struct process *min; /* min prio process to run. */
+
+	/* Choose a process to run next. */
+	min = IDLE;
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		/*
+		 * Process with higher
+		 * priority class found.
+		 */
+		if (p->nice < min->nice)
+		{
+			min->counter++;
+			min = p;
+		}
+		else if (p->nice == min->nice)
+		{
+			p->counter++;
+			if (p->counter > min->counter)
+			{
+				min = p;
+			}
+		}
+		else
+		{
+			p->counter++;
+		}
+	}
+
+	/* Switch to next process. */
+	min->priority = PRIO_USER;
+	min->state = PROC_RUNNING;
+	if(min->nice < -20)
+	{
+		min->counter = 2^1;
+	}
+	else if((min->nice >= -20) && (min->nice < 0))
+	{
+		min->counter = 2^2;
+	}
+	else if((min->nice >= 0) && (min->nice < 20)){
+		min->counter = 2^3;
+	}
+	else{
+		min->counter = 2^4;
+	}
+	if (curr_proc != min)
+		switch_to(min);
+}
+
 /**
  * @brief Yields the processor.
  */
 PUBLIC void yieldFifo(void)
 {
-	struct process *p;    /* Working process.     */
+	struct process *p;	  /* Working process.     */
 	struct process *next; /* Next process to run. */
 
 	/* Choose a process to run next. */
@@ -134,9 +204,10 @@ PUBLIC void yieldFifo(void)
 
 void (*currentScheduler)(void) = &yieldFifo;
 
-PUBLIC void yield(void){
+PUBLIC void yield(void)
+{
 
-	struct process *p;    /* Working process.     */
+	struct process *p; /* Working process.     */
 
 	/* Re-schedule process for execution. */
 	if (curr_proc->state == PROC_RUNNING)
@@ -160,6 +231,7 @@ PUBLIC void yield(void){
 	(*currentScheduler)();
 }
 
-void setCurrentScheduler(void (*scheduler)(void)){
+void setCurrentScheduler(void (*scheduler)(void))
+{
 	currentScheduler = scheduler;
 }
