@@ -81,13 +81,13 @@ PUBLIC void yielPriority(void)
 			min->counter++;
 			min = p;
 		}
-		else if (p->nice == min->nice)
+		else if ((p->utime+p->ktime) < (min->utime+min->ktime))
 		{
-			p->counter++;
 			if (p->counter > min->counter)
 			{
 				min = p;
 			}
+			min->counter++;
 		}
 		else
 		{
@@ -122,16 +122,16 @@ PUBLIC void yieldMultipleQueue(void)
 		 */
 		if (p->nice < min->nice)
 		{
-			min->counter++;
 			min = p;
+			min->counter++;
 		}
 		else if (p->nice == min->nice)
 		{
-			p->counter++;
-			if (p->counter > min->counter)
+			if ((p->utime+p->ktime) > (min->utime+min->ktime))
 			{
 				min = p;
 			}
+			min->counter++;
 		}
 		else
 		{
