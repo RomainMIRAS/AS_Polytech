@@ -142,18 +142,18 @@ PUBLIC void yieldMultipleQueue(void)
 	/* Switch to next process. */
 	min->priority = PRIO_USER;
 	min->state = PROC_RUNNING;
-	if(min->nice < -20)
+	if(min->nice < -20)	//Class 1
 	{
 		min->counter = 2^1;
 	}
-	else if((min->nice >= -20) && (min->nice < 0))
+	else if((min->nice >= -20) && (min->nice < 0)) //Class 2
 	{
 		min->counter = 2^2;
 	}
-	else if((min->nice >= 0) && (min->nice < 20)){
+	else if((min->nice >= 0) && (min->nice < 20)){ //Class 3
 		min->counter = 2^3;
 	}
-	else{
+	else{	//Class 4
 		min->counter = 2^4;
 	}
 	if (curr_proc != min)
