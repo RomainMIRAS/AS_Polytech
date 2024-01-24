@@ -129,21 +129,6 @@ PUBLIC int sys_ps()
 		/* Nice */
 		prepareValue(p->nice, nice, 7);
 
-		/* Match the process with the correct scheduling class*/
-		if(p->nice < -20){
-			p->scheduling_class = 1;
-		}
-		else if((p->nice >= -20) && (p->nice < 0)) //Class 2
-		{
-			p->scheduling_class = 2;
-		}
-		else if((p->nice >= 0) && (p->nice < 20)){ //Class 3
-			p->scheduling_class = 3;
-		}
-		else{	//Class 4
-			p->scheduling_class = 4;
-		}
-
 		/* Utime */
 		prepareValue(p->utime, utime, 8);
 
