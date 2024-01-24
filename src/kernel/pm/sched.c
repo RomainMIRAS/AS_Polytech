@@ -23,12 +23,12 @@
 #include <nanvix/hal.h>
 #include <nanvix/pm.h>
 #include <signal.h>
-#include <stdlib.h>
 
-PUBLIC int rand(){
-	static int seed = 0;
-	seed = (seed * 1103515245 + 12345) % 2147483648;
-	return seed;
+static long long next = 1;
+
+int rand()
+{
+	return ((next = next * 1103515245 + 12345) % ((long long)RAND_MAX + 1));
 }
 
 /**
@@ -71,24 +71,24 @@ PUBLIC void resume(struct process *proc)
  */
 PUBLIC void yieldLottery(void){
 	struct process *p;    /* Working process.     */
-	struct process *next; /* Next process to run. */
+	struct process *winnerProcess; /* winnerProcess process to run. */
 	int totalTickets = 0;
 	int ticket = 0;
 	int winner = 0;
-	const int MAXPRIO = 20; /* Use to make all the prio >= 0 */
+	const int maxPrio = 20; /* Use to make all the prio >= 0 */
 
 	/* Choose a process to run next. */
-	next = IDLE;
+	winnerProcess = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += MAXPRIO + 1 - p->nice; /* Range 1 à 40*/
+		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 40*/
 	}
 
-	ticket = rand() % totalTickets;
+	ticket = (totalTickets == 0 ) ? 0 : rand() % totalTickets;
 
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
@@ -96,20 +96,20 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		winner += MAXPRIO - p->nice + 1;
+		winner += maxPrio - p->nice + 1;
 
 		if (winner >= ticket){
-			next = p;
+			winnerProcess = p;
 			break;
 		}
 	}
 
 	/* Switch to next process. */
-	next->priority = PRIO_USER;
-	next->state = PROC_RUNNING;
-	next->counter = PROC_QUANTUM;
-	if (curr_proc != next)
-		switch_to(next);
+	winnerProcess->priority = PRIO_USER;
+	winnerProcess->state = PROC_RUNNING;
+	winnerProcess->counter = PROC_QUANTUM;
+	if (curr_proc != winnerProcess)
+		switch_to(winnerProcess);
 }
 
 /**
@@ -190,7 +190,7 @@ PUBLIC void yieldFifo(void)
 
 /* current scheduler fonction use for the yield */
 /* default scheduler is FIFO Scheduling (First In First Out) */
-void (*currentScheduler)(void) = &yielPriority;
+void (*currentScheduler)(void) = &yieldLottery;
 
 /**
  * @brief Yields the processor.
