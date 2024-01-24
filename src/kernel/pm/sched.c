@@ -141,8 +141,9 @@ PUBLIC void yieldMultipleQueue(void)
 	/* Switch to next process. */
 	pmin->priority = PRIO_USER;
 	pmin->state = PROC_RUNNING;
-	pmin->scheduling_class = 1;
-	pmin->counter = (1 << pmin->scheduling_class) * PROC_QUANTUM;
+	//pmin->scheduling_class = 1;
+	//pmin->counter = (1 << pmin->scheduling_class) * PROC_QUANTUM;
+	pmin->counter = (1 << 2) * PROC_QUANTUM;
 	if (curr_proc != pmin)
 		switch_to(pmin);
 }
