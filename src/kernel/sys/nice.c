@@ -40,6 +40,7 @@ PUBLIC int sys_nice(int incr)
 		curr_proc->nice = 2*NZERO - 1;
 
 	/* Match the process with the correct scheduling class*/
+	/*
 	if(curr_proc->nice < -20){
 		curr_proc->scheduling_class = 1;
 	}
@@ -52,7 +53,7 @@ PUBLIC int sys_nice(int incr)
 	}
 	else{	//Class 4
 		curr_proc->scheduling_class = 4;
-	}
+	}*/
 
 	return (curr_proc->nice);
 }
