@@ -99,7 +99,7 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 81*/
+		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à MaxNice + |MinNice| + 1*/
 	}
 
 	ticket = (totalTickets == 0 ) ? 0 : krand() % totalTickets;
@@ -131,33 +131,47 @@ PUBLIC void yieldLottery(void){
  */
 PUBLIC void yielPriority(void)
 {
-	struct process *p;    /* Working process.     */
-	struct process *min; /* min prio process to run. */
+	struct process * p;    /* Working process.     */
+    struct process * pmin; /* minPrio process*/
 
-	/* Choose a process to run next. */
-	min = IDLE;
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
-	{
-		/* Skip non-ready process. */
-		if (p->state != PROC_READY)
-			continue;
+    /* Choose a process to run next. */
+    pmin = IDLE;
 
-		/*
-		 * Process with higher
-		 * priority found.
-		 */
-		if (p->nice < min->nice)
-		{	
-			min = p;
-		}
-	}
+    for (p = FIRST_PROC; p <= LAST_PROC; p++)
+    {
+        /* Skip non-ready process. */
+        if (p->state != PROC_READY)
+            continue;
 
-	/* Switch to next process. */
-	min->priority = PRIO_USER;
-	min->state = PROC_RUNNING;
-	min->counter = PROC_QUANTUM;
-	if (curr_proc != min)
-		switch_to(min);
+
+        if (pmin == IDLE){
+            pmin = p;
+            continue;
+        }
+
+        /*Process with priority nice found.*/
+        if (p->priority < pmin->priority){
+            pmin = p;
+        } else if (p->priority == pmin->priority){
+
+            /*Process with lower nice found.*/
+            if (p->nice < pmin->nice){
+                pmin = p;            
+            } else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
+                if(p->utime + p->ktime <= pmin->utime + pmin->ktime)
+                    pmin = p;
+            }
+
+        }    
+            
+    }
+
+    /* Switch to next process. */
+    pmin->priority = PRIO_USER;
+    pmin->state = PROC_RUNNING;
+    pmin->counter = PROC_QUANTUM;
+    if (curr_proc != pmin)
+        switch_to(pmin);
 }
 
 /**
@@ -204,7 +218,7 @@ PUBLIC void yieldFifo(void)
 
 /* current scheduler fonction use for the yield */
 /* default scheduler is FIFO Scheduling (First In First Out) */
-void (*currentScheduler)(void) = &yieldLottery;
+void (*currentScheduler)(void) = &yielPriority;
 
 /**
  * @brief Yields the processor.
