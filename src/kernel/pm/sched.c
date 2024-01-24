@@ -81,38 +81,61 @@ PRIVATE int niceMax(){
 	return max;
 }
 
+PRIVATE int sumNice(){
+	int sum = 0;
+	struct process *p;    /* Working process.     */
+
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		/*
+		 * Process with higher
+		 * priority found.
+		 */
+		if (p->nice > sum)
+		{	
+			sum = 20 - p->nice + 1 ;
+		}
+	}
+
+	return sum;
+}
+
 /**
  * @brief Yields the processor with Lottery Scheduling.
  */
 PUBLIC void yieldLottery(void){
 	struct process *p;    /* Working process.     */
 	struct process *winnerProcess; /* winnerProcess process to run. */
-	int totalTickets = 0;
 	int ticket = 0;
 	int winner = 0;
-	const int maxPrio = niceMax(); /* Use to make all the prio >= 0 */
+	//const int maxPrio = niceMax(); /* Use to make all the prio >= 0 */
+	const int sum = sumNice();
 	/* Choose a process to run next. */
 	winnerProcess = IDLE;
+	// for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	// {
+	// 	/* Skip non-ready process. */
+	// 	if (p->state != PROC_READY)
+	// 		continue;
+
+	// 	totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 81*/
+	// }
+
+	ticket = (sum == 0 ) ? 0 : krand() % sum;
+
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 81*/
-	}
+		ticket -= 20 - p->nice + 1;
 
-	ticket = (totalTickets == 0 ) ? 0 : krand() % totalTickets;
-
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
-	{
-		/* Skip non-ready process. */
-		if (p->state != PROC_READY)
-			continue;
-
-		winner += maxPrio - p->nice + 1;
-
-		if (winner >= ticket){
+		if (ticket < 0){
 			winnerProcess = p;
 			break;
 		}
