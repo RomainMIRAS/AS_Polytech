@@ -106,58 +106,56 @@ PUBLIC void yielPriority(void)
 PUBLIC void yieldMultipleQueue(void)
 {
 	struct process *p;	 /* Working process.     */
-	struct process *min; /* min prio process to run. */
+	struct process *pmin; /* min prio process to run. */
 
 	/* Choose a process to run next. */
-	min = IDLE;
+	pmin = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
 
-		/*
-		 * Process with higher
-		 * priority class found.
-		 */
-		if (p->nice < min->nice)
-		{
-			min = p;
-			min->counter++;
+		if (pmin == IDLE){
+			pmin = p;
+			continue;
 		}
-		else if (p->nice == min->nice)
-		{
-			if ((p->utime+p->ktime) > (min->utime+min->ktime))
-			{
-				min = p;
+
+		/*Process with priority nice found.*/
+		if (p->priority < pmin->priority){
+			pmin = p;
+		} else if (p->priority == pmin->priority){
+
+			/*Process with lower nice found.*/
+			if (p->nice < pmin->nice){
+				pmin = p;			
+			} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
+				if(p->utime + p->ktime <= pmin->utime + pmin->ktime)
+					pmin = p;
 			}
-			min->counter++;
-		}
-		else
-		{
-			p->counter++;
+
 		}
 	}
 
 	/* Switch to next process. */
-	min->priority = PRIO_USER;
-	min->state = PROC_RUNNING;
-	if(min->nice < -20)	//Class 1
+	pmin->priority = PRIO_USER;
+	pmin->state = PROC_RUNNING;
+	if(pmin->nice < -20)	//Class 1
 	{
-		min->counter = 2;
+		pmin->counter = 2;
 	}
-	else if((min->nice >= -20) && (min->nice < 0)) //Class 2
+	else if((pmin->nice >= -20) && (pmin->nice < 0)) //Class 2
 	{
-		min->counter = 2 << 1;
+		pmin->counter = 2 << 1;
 	}
-	else if((min->nice >= 0) && (min->nice < 20)){ //Class 3
-		min->counter = 2 << 2;
+	else if((pmin->nice >= 0) && (pmin->nice < 20)){ //Class 3
+		pmin->counter = 2 << 2;
 	}
 	else{	//Class 4
-		min->counter = 2 << 3;
+		pmin->counter = 2 << 3;
 	}
-	if (curr_proc != min)
-		switch_to(min);
+	if (curr_proc != pmin)
+		switch_to(pmin);
 }
 
 /**
