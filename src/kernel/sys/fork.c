@@ -152,7 +152,7 @@ found:
 	proc->priority = curr_proc->priority;
 	proc->nice = curr_proc->nice;
 	/* Match the process with the correct scheduling class*/
-	if(proc->nice < -20){
+	/*if(proc->nice < -20){
 		proc->scheduling_class = 1;
 	}
 	else if((proc->nice >= -20) && (proc->nice < 0)) //Class 2
@@ -164,7 +164,7 @@ found:
 	}
 	else{	//Class 4
 		proc->scheduling_class = 4;
-	}
+	}*/
 	proc->alarm = 0;
 	proc->next = NULL;
 	proc->chain = NULL;

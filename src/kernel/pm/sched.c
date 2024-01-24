@@ -127,8 +127,8 @@ PUBLIC void yieldMultipleQueue(void)
 			pmin = p;
 		} else if (p->priority == pmin->priority){
 
-			/*Process with lower nice found.*/
-			if (p->scheduling_class < pmin->scheduling_class){
+			/*Process with lower scheduling class found.*/
+			if (p->nice < pmin->nice){
 				pmin = p;			
 			} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
 				if(p->utime + p->ktime <= pmin->utime + pmin->ktime)
