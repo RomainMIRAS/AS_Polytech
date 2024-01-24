@@ -67,7 +67,6 @@ PUBLIC void prioScheduling()
 
     /* Choose a process to run next. */
     pmin = IDLE;
-	//pmin->nice = 20;
 
     for (p = FIRST_PROC; p <= LAST_PROC; p++)
     {
@@ -75,23 +74,27 @@ PUBLIC void prioScheduling()
         if (p->state != PROC_READY)
             continue;
 
-		if (p != IDLE){
-			/*Process with priority nice found.*/
-			if (p->priority < pmin->priority){
-				pmin = p;
-			} else if (p->priority == pmin->priority){
-				/*Process with lower nice found.*/
-				if (p->nice < pmin->nice){
-					pmin = p;			
-				} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
-					if(p->counter >= pmin->counter)
-						pmin = p;
-				}
-			}	
-			
+
+		if (pmin == IDLE){
+			pmin = p;
+			continue;
 		}
 
-		p->counter++;
+		/*Process with priority nice found.*/
+		if (p->priority < pmin->priority){
+			pmin = p;
+		} else if (p->priority == pmin->priority){
+
+			/*Process with lower nice found.*/
+			if (p->nice < pmin->nice){
+				pmin = p;			
+			} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
+				if(p->utime + p->ktime <= pmin->utime + pmin->ktime)
+					pmin = p;
+			}
+
+		}	
+			
 	}
 
     /* Switch to next process. */
