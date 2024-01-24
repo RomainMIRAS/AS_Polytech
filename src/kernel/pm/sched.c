@@ -144,17 +144,17 @@ PUBLIC void yieldMultipleQueue(void)
 	min->state = PROC_RUNNING;
 	if(min->nice < -20)	//Class 1
 	{
-		min->counter = 2^1;
+		min->counter = 2;
 	}
 	else if((min->nice >= -20) && (min->nice < 0)) //Class 2
 	{
-		min->counter = 2^2;
+		min->counter = 2 << 1;
 	}
 	else if((min->nice >= 0) && (min->nice < 20)){ //Class 3
-		min->counter = 2^3;
+		min->counter = 2 << 2;
 	}
 	else{	//Class 4
-		min->counter = 2^4;
+		min->counter = 2 << 3;
 	}
 	if (curr_proc != min)
 		switch_to(min);
