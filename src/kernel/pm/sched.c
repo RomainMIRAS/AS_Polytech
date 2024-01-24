@@ -75,13 +75,20 @@ PUBLIC void prioScheduling()
         if (p->state != PROC_READY)
             continue;
 
-		/*Process with lower priority found.*/
-		if (p->nice < pmin->nice){
-			pmin = p;			
-		} else if(p->nice == pmin->nice){
-
-			if(p->counter>pmin->nice)
+		if (p != IDLE){
+			/*Process with priority nice found.*/
+			if (p->priority < pmin->priority){
 				pmin = p;
+			} else if (p->priority == pmin->priority){
+				/*Process with lower nice found.*/
+				if (p->nice < pmin->nice){
+					pmin = p;			
+				} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
+					if(p->counter >= pmin->counter)
+						pmin = p;
+				}
+			}	
+			
 		}
 
 		p->counter++;
