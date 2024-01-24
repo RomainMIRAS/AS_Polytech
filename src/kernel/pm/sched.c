@@ -21,15 +21,7 @@
 #include <nanvix/clock.h>
 #include <nanvix/const.h>
 #include <nanvix/hal.h>
-#include <nanvix/pm.h>
-#include <signal.h>
-
-static long long next = 1;
-
-int rand()
-{
-	return ((next = next * 1103515245 + 12345) % ((long long)RAND_MAX + 1));
-}
+#include <nanvix/klib.h>
 
 /**
  * @brief Schedules a process to execution.
@@ -66,6 +58,29 @@ PUBLIC void resume(struct process *proc)
 		sched(proc);
 }
 
+PRIVATE int niceMax(){
+	int max = 0;
+	struct process *p;    /* Working process.     */
+
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+
+		/*
+		 * Process with higher
+		 * priority found.
+		 */
+		if (p->nice > max)
+		{	
+			max = p->nice;
+		}
+	}
+
+	return max;
+}
+
 /**
  * @brief Yields the processor with Lottery Scheduling.
  */
@@ -75,8 +90,7 @@ PUBLIC void yieldLottery(void){
 	int totalTickets = 0;
 	int ticket = 0;
 	int winner = 0;
-	const int maxPrio = 20; /* Use to make all the prio >= 0 */
-
+	const int maxPrio = niceMax(); /* Use to make all the prio >= 0 */
 	/* Choose a process to run next. */
 	winnerProcess = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
@@ -85,10 +99,10 @@ PUBLIC void yieldLottery(void){
 		if (p->state != PROC_READY)
 			continue;
 
-		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 40*/
+		totalTickets += maxPrio + 1 - p->nice; /* Range 1 à 81*/
 	}
 
-	ticket = (totalTickets == 0 ) ? 0 : rand() % totalTickets;
+	ticket = (totalTickets == 0 ) ? 0 : krand() % totalTickets;
 
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
