@@ -112,21 +112,7 @@ PUBLIC void yieldMultipleQueue(void)
 	pmin = IDLE;
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 	{
-		/* Match the process with the correct scheduling class*/
-		if(p->nice < -20){
-			p->scheduling_class = 1;
-		}
-		else if((pmin->nice >= -20) && (pmin->nice < 0)) //Class 2
-		{
-			p->scheduling_class = 2;
-		}
-		else if((pmin->nice >= 0) && (pmin->nice < 20)){ //Class 3
-			p->scheduling_class = 3;
-		}
-		else{	//Class 4
-			p->scheduling_class = 4;
-		}
-
+		
 		/* Skip non-ready process. */
 		if (p->state != PROC_READY)
 			continue;
