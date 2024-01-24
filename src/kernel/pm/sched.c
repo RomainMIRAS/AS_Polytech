@@ -59,32 +59,46 @@ PUBLIC void resume(struct process *proc)
 		sched(proc);
 }
 
-/**
- * @brief Yields the processor.
- */
-PUBLIC void yield(void)
+
+PUBLIC void prioScheduling()
 {
+    struct process * p;    /* Working process.     */
+    struct process * pmin; /* minPrio process*/
+
+    /* Choose a process to run next. */
+    pmin = IDLE;
+	//pmin->nice = 20;
+
+    for (p = FIRST_PROC; p <= LAST_PROC; p++)
+    {
+        /* Skip non-ready process. */
+        if (p->state != PROC_READY)
+            continue;
+
+		/*Process with lower priority found.*/
+		if (p->nice < pmin->nice){
+			pmin = p;			
+		} else if(p->nice == pmin->nice){
+
+			if(p->counter>pmin->nice)
+				pmin = p;
+		}
+
+		p->counter++;
+	}
+
+    /* Switch to next process. */
+    pmin->priority = PRIO_USER;
+    pmin->state = PROC_RUNNING;
+    pmin->counter = PROC_QUANTUM;
+    if (curr_proc != pmin)
+        switch_to(pmin);
+}
+
+PUBLIC void fifoScheduling(){
+
 	struct process *p;    /* Working process.     */
 	struct process *next; /* Next process to run. */
-
-	/* Re-schedule process for execution. */
-	if (curr_proc->state == PROC_RUNNING)
-		sched(curr_proc);
-
-	/* Remember this process. */
-	last_proc = curr_proc;
-
-	/* Check alarm. */
-	for (p = FIRST_PROC; p <= LAST_PROC; p++)
-	{
-		/* Skip invalid processes. */
-		if (!IS_VALID(p))
-			continue;
-
-		/* Alarm has expired. */
-		if ((p->alarm) && (p->alarm < ticks))
-			p->alarm = 0, sndsig(p, SIGALRM);
-	}
 
 	/* Choose a process to run next. */
 	next = IDLE;
@@ -118,4 +132,57 @@ PUBLIC void yield(void)
 	next->counter = PROC_QUANTUM;
 	if (curr_proc != next)
 		switch_to(next);
+}
+
+PUBLIC void RoundRobinScheduling(){
+
+	struct process *p;    /* Working process.     */
+	struct process *next; /* Next process to run. */
+
+	/* Choose a process to run next. */
+	next = IDLE;
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip non-ready process. */
+		if (p->state != PROC_READY)
+			continue;
+		else
+			next = p;
+	}
+
+	/* Switch to next process. */
+	next->priority = PRIO_USER;
+	next->state = PROC_RUNNING;
+	next->counter = PROC_QUANTUM;
+	if (curr_proc != next)
+		switch_to(next);
+}
+
+ 
+/**
+ * @brief Yields the processor.
+ */
+PUBLIC void yield(void)
+{
+	struct process *p;    /* Working process.     */
+	/* Re-schedule process for execution. */
+	if (curr_proc->state == PROC_RUNNING)
+		sched(curr_proc);
+
+	/* Remember this process. */
+	last_proc = curr_proc;
+
+	/* Check alarm. */
+	for (p = FIRST_PROC; p <= LAST_PROC; p++)
+	{
+		/* Skip invalid processes. */
+		if (!IS_VALID(p))
+			continue;
+
+		/* Alarm has expired. */
+		if ((p->alarm) && (p->alarm < ticks))
+			p->alarm = 0, sndsig(p, SIGALRM);
+	}
+
+	prioScheduling();
 }
