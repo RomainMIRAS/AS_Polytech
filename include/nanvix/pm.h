@@ -201,10 +201,10 @@
     	int counter;             /**< Remaining quantum.      */
     	int priority;            /**< Process priorities.     */
     	int nice;                /**< Nice for scheduling.    */
-    	unsigned alarm;          /**< Alarm.                  */
+    	int scheduling_class;	 /**< Scheduling class determined by nice value for Multiple Queue (A été rajouté) */
+		unsigned alarm;          /**< Alarm.                  */
 		struct process *next;    /**< Next process in a list. */
 		struct process **chain;  /**< Sleeping chain.         */
-		//int scheduling_class;	 /**< Scheduling class determined by nice value for Multiple Queue (A été rajouté) */
 		/**@}*/
 	};
 

@@ -128,9 +128,9 @@ PUBLIC void yieldMultipleQueue(void)
 		} else if (p->priority == pmin->priority){
 
 			/*Process with lower scheduling class found.*/
-			if (p->nice < pmin->nice){
+			if (p->scheduling_class < pmin->scheduling_class){
 				pmin = p;			
-			} else if(p->nice == pmin->nice){ /*Process with lower priority found.*/
+			} else if(p->scheduling_class == pmin->scheduling_class){ /*Process with lower priority found.*/
 				if(p->utime + p->ktime <= pmin->utime + pmin->ktime)
 					pmin = p;
 			}
@@ -141,9 +141,8 @@ PUBLIC void yieldMultipleQueue(void)
 	/* Switch to next process. */
 	pmin->priority = PRIO_USER;
 	pmin->state = PROC_RUNNING;
-	//pmin->scheduling_class = 1;
-	//pmin->counter = (1 << pmin->scheduling_class) * PROC_QUANTUM;
-	pmin->counter = (1 << 2) * PROC_QUANTUM;
+	pmin->counter = (1 << pmin->scheduling_class) * PROC_QUANTUM;
+	pmin->scheduling_class = 1;
 	if (curr_proc != pmin)
 		switch_to(pmin);
 }
