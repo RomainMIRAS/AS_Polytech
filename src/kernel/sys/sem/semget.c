@@ -1,14 +1,15 @@
 #include <sys/sem.h>
-
+/**
+ * @brief System call for getting a semaphore.
+ * @return ID of the semaphore.
+*/
 PUBLIC int sys_semget(unsigned key)
 {
-    struct proc *caller = proc_table + who_p;
     int i;
-    for (i = 0; i < SEM_NUMBER; i++)
+    for (i = 0; i < SEM_MAX; i++)
     {
-        if (semaphores[i].sem_key == key)
+        if (semTab[i].semid == key)
         {
-            caller->semaphore = i;
             return i;
         }
     }
