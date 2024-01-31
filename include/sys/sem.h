@@ -23,8 +23,6 @@
 #define SEM_MAX 64
 #define SEM_CREATED 1
 #define SEM_INVALID_ID -1
-#define SEM_BLOCKED -2
-
 	struct semaphore
 	{
 		int state;
