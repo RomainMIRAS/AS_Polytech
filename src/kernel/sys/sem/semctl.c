@@ -1,5 +1,4 @@
 #include <../include/sys/sem.h>
-#include <sys/sem/semget.c>
 
 PUBLIC int semctl(int semid, int cmd, int val)
 {
