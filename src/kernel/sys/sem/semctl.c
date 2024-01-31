@@ -9,7 +9,8 @@ PUBLIC int semctl(int semid, int cmd, int val)
     case GETVAL:
         return sem.value;
     case SETVAL:
-        sem.semid = val;
+        sema.value = val;
+        sema.state = SEM_INIT_VALUE;
         return 1;
     case IPC_RMID:
         sem.semid = -1;
