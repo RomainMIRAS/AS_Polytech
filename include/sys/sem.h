@@ -21,10 +21,13 @@
 #define SEM_H_
 
 #define SEM_MAX 64
+#define SEM_INIT_VALUE 1
+#define SEM_INVALID_ID -1
+#define SEM_BLOCKED -2
 
 	struct semaphore
 	{
-		int semid;
+		int state;
     	struct process ** chain;
     	int value;
 	};
