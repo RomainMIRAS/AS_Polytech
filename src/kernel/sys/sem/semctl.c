@@ -13,7 +13,8 @@ PUBLIC int semctl(int semid, int cmd, int val)
         sem.semid = val;
         return 1;
     case IPC_RMID:
-        return destroy(semid);
+        sem.semid = -1;
+        return 0;
     default:
         return -1;
     }
