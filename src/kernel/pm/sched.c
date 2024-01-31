@@ -219,7 +219,7 @@ PUBLIC void yieldFifo(void)
 
 /* current scheduler fonction use for the yield */
 /* default scheduler is FIFO Scheduling (First In First Out) */
-void (*currentScheduler)(void) = &yieldLottery;
+void (*currentScheduler)(void) = &yieldFifo;
 
 /**
  * @brief Yields the processor.
