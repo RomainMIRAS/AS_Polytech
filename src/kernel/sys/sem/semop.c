@@ -3,9 +3,19 @@
 
 PUBLIC int semop(int semid, int op)
 {
+
+        if (semid < 0 || semid >= SEM_MAX)
+            return -1;
+
         //disable_interrupts();
 
         struct semaphore sem = semTab[semid];
+        
+
+        if(sem.state != SEM_CREATED)
+            return -1;
+
+
         switch (op)
         {
         case 0:

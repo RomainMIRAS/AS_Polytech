@@ -2,6 +2,10 @@
 
 PUBLIC int semctl(int semid, int cmd, int val)
 {
+
+    if (semid < 0 || semid >= SEM_MAX)
+        return -1;
+
     struct semaphore sem = semTab[semid];
 
     if(sem.state != SEM_CREATED)
