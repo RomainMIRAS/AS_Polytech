@@ -1,6 +1,6 @@
 #include <../include/sys/sem.h>
 
-PUBLIC int semctl(int semid, int cmd, int val)
+int semctl(int semid, int cmd, int val)
 {
 
     if (semid < 0 || semid >= SEM_MAX)
@@ -16,7 +16,7 @@ PUBLIC int semctl(int semid, int cmd, int val)
     case GETVAL:
         return sem.value;
     case SETVAL:
-        sema.value = val;
+        sem.value = val;
         return 1;
     case IPC_RMID:
         sem.state = SEM_INVALID_ID;

@@ -1,7 +1,7 @@
 #include <sys/sem.h>
 
 
-PUBLIC int semop(int semid, int op)
+int semop(int semid, int op)
 {
 
         if (semid < 0 || semid >= SEM_MAX)
@@ -27,7 +27,6 @@ PUBLIC int semop(int semid, int op)
                 }
                 else
                 {
-                        sem.state = SEM_BLOCKED;
                         //enable_interrupts();
                         return 0;
                 }

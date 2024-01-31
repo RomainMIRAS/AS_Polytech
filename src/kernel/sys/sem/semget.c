@@ -3,7 +3,7 @@
  * @brief System call for getting a semaphore.
  * @return ID of the semaphore.
 */
-PUBLIC int semget(unsigned key)
+int semget(unsigned key)
 {
     for (int i = 0; i < SEM_MAX; i++)
     {
