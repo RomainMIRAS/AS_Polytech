@@ -2,7 +2,7 @@
 #include <sys/sem.c>
 #include <sys/sem/semget.c>
 
-PUBLIC int sys_semctl(int semid, int cmd, int val)
+PUBLIC int semctl(int semid, int cmd, int val)
 {
     struct semaphore sem = semTab[sys_semget(semid)];
     switch (cmd)
