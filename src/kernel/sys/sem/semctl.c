@@ -16,7 +16,7 @@ PUBLIC int semctl(int semid, int cmd, int val)
         sema.value = val;
         return 1;
     case IPC_RMID:
-        sem.semid = -1;
+        sem.state = SEM_INVALID_ID;
         sem.chain = NULL;
         return 1;
     default:
