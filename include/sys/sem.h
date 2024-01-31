@@ -20,6 +20,17 @@
 #ifndef SEM_H_
 #define SEM_H_
 
+#define SEM_MAX 64
+
+	struct semaphore
+	{
+		int semid;
+    	struct process ** chain;
+    	int value;
+	};
+
+	struct semaphore semTab[SEM_MAX];
+
 	/**
 	 * @brief Comand values for semaphores.
 	 */
