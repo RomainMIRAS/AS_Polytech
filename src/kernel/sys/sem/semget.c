@@ -5,14 +5,13 @@
 */
 PUBLIC int semget(unsigned key)
 {
-    int i;
-    for (i = 0; i < SEM_MAX; i++)
+    if (key < 0 || key >= SEM_MAX)
+        return -1;
+
+    if (semTab[key].semid == -1)
     {
-        if (semTab[i].semid == -1)
-        {
-            semTab[i].semid = i;
-            return i;
-        }
+        semTab[key].semid = key;
+        return key;
     }
     return -1;
 }
