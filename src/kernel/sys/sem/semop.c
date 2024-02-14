@@ -1,5 +1,6 @@
-#include "../include/sys/sem.h"
-#include "../include/nanvix/pm.h"
+#include <nanvix/sem.h>
+#include <sys/sem.h>
+#include <nanvix/pm.h>
 
 #define DOWN_OP 0
 #define UP_OP 1

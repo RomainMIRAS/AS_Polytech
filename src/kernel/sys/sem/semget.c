@@ -1,4 +1,5 @@
-#include "../include/sys/sem.h"
+#include <nanvix/sem.h>
+#include <sys/sem.h>
 
 /**
  * @brief System call for getting a semaphore.

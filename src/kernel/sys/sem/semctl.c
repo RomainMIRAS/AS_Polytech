@@ -1,4 +1,5 @@
-#include "../include/sys/sem.h"
+#include <nanvix/sem.h>
+#include <sys/sem.h>
 
 int sys_semctl(int semid, int cmd, int val)
 {
