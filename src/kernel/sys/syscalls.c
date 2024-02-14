@@ -20,7 +20,6 @@
 
 #include <nanvix/const.h>
 #include <nanvix/syscall.h>
-
 /*
  * System calls table.
  */

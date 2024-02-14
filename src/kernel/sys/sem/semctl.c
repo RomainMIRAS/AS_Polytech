@@ -1,4 +1,4 @@
-#include <sys/sem.h>
+#include "../include/sys/sem.h"
 
 int sys_semctl(int semid, int cmd, int val)
 {

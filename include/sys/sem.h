@@ -30,7 +30,7 @@
 		struct semaphore
 		{
 			int state;
-			int key;
+			unsigned key;
 			struct process ** chain;
 			int value;
 		};
