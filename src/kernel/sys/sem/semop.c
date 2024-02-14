@@ -11,11 +11,12 @@ int semop(int semid, int op){
                     sleep(semTab[semid]->chain);
          }
          semTab[semid]->value--;
+    }
     else{
          // opération up
          if(semTab[semid]->value == 0){
              if(semTab[semid]->chain != idle_chain){
-                 wakeupOne(semTab[i]->chain);
+                 wakeupOne(semTab[semid]->chain);
               }
           }
           semTab[semid]->value++;  
