@@ -5,17 +5,28 @@
 */
 int semget(unsigned key)
 {
+    int first_invalid_id = -1;
     for (int i = 0; i < SEM_MAX; i++)
     {
-        if (semTab[i].state == SEM_INVALID_ID)
-        {
-            semTab[i].state = SEM_CREATED;
-            semTab[i].key = key;
-            semTab[i].chain = NULL;
-            semTab[i].value = 1;
+        if(semTab[i].key == key){
             return i;
+        }
+
+        if(first_invalid_id == -1){
+            if (semTab[i].state == SEM_INVALID_ID)
+            {
+                first_invalid_id = i;
+            }   
         }
     }
 
-    return -1;
+    if(first_invalid_id == -1){
+        return -1;
+    }
+
+    semTab[first_invalid_id].state = SEM_CREATED;
+    semTab[first_invalid_id].key = key;
+    semTab[first_invalid_id].chain = NULL;
+    semTab[first_invalid_id].value = 1;
+    return first_invalid_id;
 }
