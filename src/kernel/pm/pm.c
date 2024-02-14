@@ -26,6 +26,7 @@
 #include <nanvix/hal.h>
 #include <nanvix/mm.h>
 #include <nanvix/pm.h>
+#include <nanvix/sem.h>
 #include <nanvix/klib.h>
 #include <sys/stat.h>
 #include <signal.h>
@@ -45,11 +46,6 @@ PUBLIC char idle_kstack[KSTACK_SIZE];
  * @brief Process table.
  */
 PUBLIC struct process proctab[PROC_MAX];
-
-/**
- * @brief Process table.
- */
-PUBLIC struct process semTab[SEM_MAX];
 
 /**
  * @brief Current running process.
@@ -79,9 +75,13 @@ PUBLIC void pm_init(void)
 	int i;             /* Loop index.      */
 	struct process *p; /* Working process. */
 
+	/* Initialize the semaphore table. */
+
 	/* Initialize the process table. */
 	for (p = FIRST_PROC; p <= LAST_PROC; p++)
 		p->flags = 0, p->state = PROC_DEAD;
+
+	sem_init();
 
 	/* Handcraft init process. */
 	IDLE->cr3 = (dword_t)idle_pgdir;

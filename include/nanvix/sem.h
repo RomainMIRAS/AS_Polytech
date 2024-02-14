@@ -26,18 +26,18 @@
 
 
 	#define SEM_CREATED 1
-	#define SEM_INVALID_ID -1
+	#define SEM_INVALID_ID 2
 
     struct semaphore
     {
-        int state;
+        unsigned state;
         unsigned key;
         struct process ** chain;
         int value;
     };
 
 	extern struct semaphore semTab[SEM_MAX];
-
+    extern void sem_init(void);
 
 #endif /* _ASM_FILE_ */
 

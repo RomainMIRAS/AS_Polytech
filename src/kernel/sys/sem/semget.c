@@ -1,6 +1,6 @@
 #include <nanvix/sem.h>
 #include <sys/sem.h>
-
+#include <nanvix/klib.h>
 /**
  * @brief System call for getting a semaphore.
  * @return ID of the semaphore.
@@ -26,6 +26,8 @@ int sys_semget(unsigned key)
         return -1;
     }
 
+    kprintf("[semget] Creating new semaphore with key %d\n", key);
+    kprintf("[semget] First invalid id: %d\n", first_invalid_id);
     semTab[first_invalid_id].state = SEM_CREATED;
     semTab[first_invalid_id].key = key;
     semTab[first_invalid_id].chain = 0;
