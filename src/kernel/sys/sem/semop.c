@@ -1,4 +1,5 @@
 #include "../include/sys/sem.h"
+#include "../include/nanvix/pm.h"
 
 #define DOWN_OP 0
 #define UP_OP 1
@@ -19,7 +20,7 @@ int sys_semop(int semid, int op){
                 else{
                         sem->value--;
                 }
-                break;
+                return 1;
 
         case UP_OP:
                 if(sem->value < 0){
@@ -28,14 +29,12 @@ int sys_semop(int semid, int op){
                 else{
                         if(sem->chain != NULL){
                                 wakeupOne(sem->chain);
-                        }
-                        else{
+                        }else{
                                 sem->value++;
                         }
                 }
-                break;
-
+                return 1;
         default:
-                break;
+                return -1;
     }
 }

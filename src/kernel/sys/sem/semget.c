@@ -27,7 +27,7 @@ int sys_semget(unsigned key)
 
     semTab[first_invalid_id].state = SEM_CREATED;
     semTab[first_invalid_id].key = key;
-    semTab[first_invalid_id].chain = IDLE;
+    semTab[first_invalid_id].chain = 0;
     semTab[first_invalid_id].value = 1;
     return first_invalid_id;
 }
