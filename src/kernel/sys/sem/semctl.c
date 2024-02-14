@@ -1,6 +1,6 @@
-#include <../include/sys/sem.h>
+#include <sys/sem.h>
 
-int semctl(int semid, int cmd, int val)
+int sys_semctl(int semid, int cmd, int val)
 {
 
     if (semid < 0 || semid >= SEM_MAX)
@@ -20,7 +20,7 @@ int semctl(int semid, int cmd, int val)
         return 1;
     case IPC_RMID:
         sem.state = SEM_INVALID_ID;
-        sem.chain = NULL;
+        // sem.chain = NULL;
         return 1;
     default:
         return -1;

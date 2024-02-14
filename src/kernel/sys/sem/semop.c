@@ -1,7 +1,6 @@
 #include <sys/sem.h>
 
-
-int semop(int semid, int op)
+int sys_semop(int semid, int op)
 {
 
         if (semid < 0 || semid >= SEM_MAX)

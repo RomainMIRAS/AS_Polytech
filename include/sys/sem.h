@@ -17,34 +17,35 @@
  * along with Nanvix. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SEM_H_
-#define SEM_H_
+#ifndef SYS_SEM_H_
+#define SYS_SEM_H_
 
-#define SEM_MAX 64
-#define SEM_CREATED 1
-#define SEM_INVALID_ID -1
-	struct semaphore
-	{
-		int state;
-		int key;
-    	struct process ** chain;
-    	int value;
-	};
+#include <nanvix/config.h>
 
-	struct semaphore semTab[SEM_MAX];
+#ifndef _ASM_FILE_
 
-	/**
-	 * @brief Comand values for semaphores.
-	 */
-	/**@{*/
-	#define GETVAL   0 /**< Returns the value of a semaphore. */
-	#define SETVAL   1 /**< Sets the value of a semaphore.    */
-	#define IPC_RMID 3 /**< Destroys a semaphore.            */
-	/**@}*/
+	#define SEM_CREATED 1
+	#define SEM_INVALID_ID -1
 
-	/* Forward definitions. */
-	extern int semget(unsigned);
-	extern int semctl(int, int, int);
-	extern int semop(int, int);
+		struct semaphore
+		{
+			int state;
+			int key;
+			struct process ** chain;
+			int value;
+		};
 
-#endif /* SEM_H_ */
+		extern struct semaphore semTab[SEM_MAX];
+
+		/**
+		 * @brief Comand values for semaphores.
+		 */
+		/**@{*/
+		#define GETVAL   0 /**< Returns the value of a semaphore. */
+		#define SETVAL   1 /**< Sets the value of a semaphore.    */
+		#define IPC_RMID 3 /**< Destroys a semaphore.            */
+		/**@}*/
+
+#endif /* _ASM_FILE_ */
+
+#endif /* SYS_SEM_H_ */

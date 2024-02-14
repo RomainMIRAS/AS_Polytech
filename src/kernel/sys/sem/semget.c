@@ -1,9 +1,10 @@
-#include <../include/sys/sem.h>
+#include <sys/sem.h>
+
 /**
  * @brief System call for getting a semaphore.
  * @return ID of the semaphore.
 */
-int semget(unsigned key)
+int sys_semget(unsigned key)
 {
     for (int i = 0; i < SEM_MAX; i++)
     {
@@ -11,7 +12,7 @@ int semget(unsigned key)
         {
             semTab[i].state = SEM_CREATED;
             semTab[i].key = key;
-            semTab[i].chain = NULL;
+            // semTab[i].chain = NULL;
             semTab[i].value = 1;
             return i;
         }

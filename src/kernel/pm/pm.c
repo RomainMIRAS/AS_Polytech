@@ -47,6 +47,11 @@ PUBLIC char idle_kstack[KSTACK_SIZE];
 PUBLIC struct process proctab[PROC_MAX];
 
 /**
+ * @brief Process table.
+ */
+PUBLIC struct process semTab[SEM_MAX];
+
+/**
  * @brief Current running process.
  */
 PUBLIC struct process *curr_proc = IDLE;
