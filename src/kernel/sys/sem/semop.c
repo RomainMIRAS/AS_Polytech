@@ -1,42 +1,24 @@
 #include <sys/sem.h>
 
-
-int semop(int semid, int op)
-{
-
-        if (semid < 0 || semid >= SEM_MAX)
-            return -1;
-
-        //disable_interrupts();
-
-        struct semaphore sem = semTab[semid];
-        
-
-        if(sem.state != SEM_CREATED)
-            return -1;
-
-
-        switch (op)
-        {
-        case 0:
-                if (sem.value > 0)
-                {
-                        sem.value--;
-                        //enable_interrupts();
-                        return 1;
-                }
-                else
-                {
-                        //enable_interrupts();
-                        return 0;
-                }
-        case 1:
-                sem.value++;
-                //enable_interrupts();
-                return 1;
-        default:
-                //enable_interrupts();
-                return -1;
-        }
+int semop(int semid, int op){
+    //disable_interrupt()
+    if(semid < 0 || semid > SEM_MAX){ //le mieu serait Max_sem_id mais pas incore implem
+        return -1;
+    }
+    if(op < 0){
+        // opération down
+        if(semTab[semid]->value <= 0){
+                    sleep(semTab[semid]->chain);
+         }
+         semTab[semid]->value--;
+    else{
+         // opération up
+         if(semTab[semid]->value == 0){
+             if(semTab[semid]->chain != idle_chain){
+                 wakeupOne(semTab[i]->chain);
+              }
+          }
+          semTab[semid]->value++;  
+    }
+    return 0;
 }
-

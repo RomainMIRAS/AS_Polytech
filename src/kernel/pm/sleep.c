@@ -103,3 +103,17 @@ PUBLIC void wakeup(struct process **chain)
 		*chain = (*chain)->next;
 	}
 }
+
+/*
+* @brief Wakes up only the first sleeping process in a chain
+*/
+PUBLIC void wakeupOne(struct process **chain)
+{
+	if(idle_chain == chain){
+		idle_chain = NULL;
+		return;
+	}
+
+	sched(*chain);
+	*chain = (*chain)->next;
+}
