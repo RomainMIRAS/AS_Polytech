@@ -21,7 +21,7 @@
 #define CONFIG_H_
 
 	/* Machine configuration. */
-	#define MACHINE_NAME "valhalla" /* Machine name.*/
+	#define MACHINE_NAME "supercomputer" /* Machine name.*/
 	#define CPU                i386 /* Cpu model.                 */
 	#define MEMORY_SIZE   0x1000000 /* Memory size (in bytes).    */
 	#define HDD_SIZE      0x2000000 /* Hard disk size (in bytes). */

@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <nanvix/accounts.h>
 
 /* Test flags. */
 #define EXTENDED (1 << 0)
@@ -586,6 +587,34 @@ int fpu_test(void)
 	return (result == 0x40b2aaaa);
 }
 
+/**
+ * @brief Security testing module.
+ * On affiche tout les comptes avec les mots de passe utilisateur et groupe
+*/
+int secu_test(void){
+	int file;         /* Passwords file.  */
+	struct account a; /* Working account. */
+
+	/* Open passwords file. */
+	if ((file = open("/etc/passwords", O_RDONLY)) == -1)
+	{
+		fprintf(stderr, "cannot open password file\n");
+		return (-1);
+	}
+
+	/* Show all the passwords file. */
+	while (read(file, &a, sizeof(struct account)))
+	{
+		 account_decrypt(a.name, USERNAME_MAX, KERNEL_HASH);
+		 account_decrypt(a.password, PASSWORD_MAX, KERNEL_HASH);
+		printf("name: %s\n", a.name);
+		printf("password: %s\n", a.password);
+		printf("uid: %d\n", a.uid);
+		printf("gid: %d\n", a.gid);
+	}
+	return (0);
+}
+
 /*============================================================================*
  *                                   main                                     *
  *============================================================================*/
@@ -605,6 +634,7 @@ static void usage(void)
 	printf("  ipc   Interprocess Communication Test\n");
 	printf("  swp   Swapping Test\n");
 	printf("  sched Scheduling Test\n");
+	printf("  secu  Security Test\n");
 
 	exit(EXIT_SUCCESS);
 }
@@ -662,6 +692,12 @@ int main(int argc, char **argv)
 			printf("Float Point Unit Test\n");
 			printf("  Result [%s]\n",
 				(!fpu_test()) ? "PASSED" : "FAILED");
+		}
+		else if (!strcmp(argv[i], "secu"))
+		{
+			printf("Security Test\n");
+			printf("  Result [%s]\n",
+				(!secu_test()) ? "PASSED" : "FAILED");
 		}
 
 		/* Wrong usage. */
