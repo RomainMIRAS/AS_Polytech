@@ -13,9 +13,11 @@
  * Elle s'apelle avec : "memdump" sans arguments.
 */
 static void memdump(void){
+	printf("test");
     int file;
     char * buf = "9";
-    if((file = open("memory_dump", O_WRONLY)) == 1){
+    if((file = open("memory_dump", O_WRONLY)) == -1){
+		printf("test2");
         while(1){
             write(file, buf, 1);
         }
