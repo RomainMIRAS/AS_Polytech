@@ -145,7 +145,6 @@ int main(int argc, char *const argv[])
 	// char name[USERNAME_MAX];
 	// char password[PASSWORD_MAX];	
 	// for (int i = 0; i < strlen(listeChar); i++){
-		
 	// }
 	
 
