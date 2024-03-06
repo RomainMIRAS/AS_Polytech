@@ -135,8 +135,19 @@ int main(int argc, char *const argv[])
 
 #if (MULTIUSER == 1)
 
+	// Normal way to login
 	while (!login())
 		/* noop */;
+
+	//brute force by testing all possible passwords
+	//TODO Finish this
+	// char *listeChar = "abcdefghijklmnopqrstuvwxyz";
+	// char name[USERNAME_MAX];
+	// char password[PASSWORD_MAX];	
+	// for (int i = 0; i < strlen(listeChar); i++){
+		
+	// }
+	
 
 #endif
 

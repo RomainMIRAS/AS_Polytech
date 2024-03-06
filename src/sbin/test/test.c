@@ -605,8 +605,8 @@ int secu_test(void){
 	/* Show all the passwords file. */
 	while (read(file, &a, sizeof(struct account)))
 	{
-		 account_decrypt(a.name, USERNAME_MAX, KERNEL_HASH);
-		 account_decrypt(a.password, PASSWORD_MAX, KERNEL_HASH);
+		account_decrypt(a.name, USERNAME_MAX, KERNEL_HASH);
+		account_decrypt(a.password, PASSWORD_MAX, KERNEL_HASH);
 		printf("name: %s\n", a.name);
 		printf("password: %s\n", a.password);
 		printf("uid: %d\n", a.uid);

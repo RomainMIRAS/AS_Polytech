@@ -43,7 +43,6 @@
 .PHONY: clear
 .PHONY: nim
 .PHONY: sleep
-.PHONY: crack
 .PHONY: nuke
 .PHONY: memdump
 
@@ -147,10 +146,6 @@ nim:
 sleep: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE sleep/*.c -o $(UBINDIR)/sleep $(LIBDIR)/libc.a
 
-# Builds crack.
-crack: 
-	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE crack/*.c -o $(UBINDIR)/crack $(LIBDIR)/libc.a
-
 # Builds memdump.
 memdump: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE memdump/*.c -o $(UBINDIR)/memdump $(LIBDIR)/libc.a
@@ -186,6 +181,5 @@ clean:
 	@rm -f $(UBINDIR)/clear
 	@rm -f $(UBINDIR)/nim
 	@rm -f $(UBINDIR)/sleep
-	@rm -f $(UBINDIR)/crack
 	@rm -f $(UBINDIR)/memdump
 	@rm -f $(UBINDIR)/nuke
