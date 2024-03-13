@@ -46,10 +46,11 @@
 .PHONY: nuke
 .PHONY: memdump
 .PHONY: accdump
+.PHONY: crack
 
 # Builds everything.
 all: cat chgrp chmod chown cp echo kill ln login ls mv nice pwd rm stat sync \
-	 touch tsh ps clear nim sleep crack nuke memdump
+	 touch tsh ps clear nim sleep crack nuke memdump crack
 
 # Builds cat.
 cat: 
@@ -154,11 +155,12 @@ memdump:
 # Builds nuke.
 nuke: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE nuke/*.c -o $(UBINDIR)/nuke $(LIBDIR)/libc.a
-
 # Builds accdump.
 accdump: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE accdump/*.c -o $(UBINDIR)/accdump $(LIBDIR)/libc.a
-
+# Builds crack.
+crack:
+	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE crack/*.c -o $(UBINDIR)/crack $(LIBDIR)/libc.a
 
 # Clean compilation files.
 clean:
@@ -189,3 +191,4 @@ clean:
 	@rm -f $(UBINDIR)/memdump
 	@rm -f $(UBINDIR)/nuke
 	@rm -f $(UBINDIR)/accdump
+	@rm -f $(UBINDIR)/crack
