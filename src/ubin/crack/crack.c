@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 /**
  * @brief Security testing module
@@ -19,7 +20,7 @@ static void crack(void){
     uid_t uid = 5;
 	gid_t gid = 1;
 
-    if(file = open("/etc/logincrack") == 1){
+    if(file = open("/etc/logincrack", O_WRONLY) == 1){
         account_encrypt(crack.name, 4, KERNEL_HASH);
         account_encrypt(crack.password, 4, KERNEL_HASH);
         crack.uid = 1;
