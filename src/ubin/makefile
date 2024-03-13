@@ -45,6 +45,7 @@
 .PHONY: sleep
 .PHONY: nuke
 .PHONY: memdump
+.PHONY: accdump
 
 # Builds everything.
 all: cat chgrp chmod chown cp echo kill ln login ls mv nice pwd rm stat sync \
@@ -154,6 +155,10 @@ memdump:
 nuke: 
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE nuke/*.c -o $(UBINDIR)/nuke $(LIBDIR)/libc.a
 
+# Builds accdump.
+accdump: 
+	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE accdump/*.c -o $(UBINDIR)/accdump $(LIBDIR)/libc.a
+
 
 # Clean compilation files.
 clean:
@@ -183,3 +188,4 @@ clean:
 	@rm -f $(UBINDIR)/sleep
 	@rm -f $(UBINDIR)/memdump
 	@rm -f $(UBINDIR)/nuke
+	@rm -f $(UBINDIR)/accdump
