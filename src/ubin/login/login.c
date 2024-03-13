@@ -152,11 +152,17 @@ int main(int argc, char *const argv[])
 		for(int i = 0; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
 
 			for(int init = 0; init <= i; init++){	
-				login[init] = 97;						//If i = 4, login = "aaaa"
+				login[init] = 48;						//If i = 4, login = "0000"
 			}
 
 			for(int j = i; j >= 0; j--){				// Changes letter from the end and goes back to first password character
 				
+				for(int digit = 48; digit < 58; digit++){	//Tries all possibilities at login position j
+					login[j] = digit;
+					
+					finished = authenticate(login, login);
+				}
+
 				for(int letter = 97; letter < 123; letter++){	//Tries all possibilities at login position j
 					login[j] = letter;
 					
@@ -164,7 +170,10 @@ int main(int argc, char *const argv[])
 				}
 			}
 
-			for(int k = i; k > 0; k--){					
+			for(int k = i; k > 0; k--){	
+				if(login[k] == 58)
+					login[k] = 97;
+							
 				if(login[k] == 123)					//changes k-1 letter once every k letter is tested
 					login[k-1]++;
 			}
