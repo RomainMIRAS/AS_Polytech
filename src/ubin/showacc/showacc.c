@@ -11,13 +11,30 @@
 
 /**
  * @brief Security testing module
- * Une fonction utilisateur qui va provoquer un memory dump.
- * Elle s'apelle avec : "memdump" sans arguments.
+ * Une fonction utilisateur qui montre tout les comptes du systeme.
+ * Elle s'apelle avec : "showacc" sans arguments.
 */
-static void accdump(void){
-	printf("test");
-}
+static void showacc(void){
+    int file;         /* Passwords file.  */
+	struct account a; /* Working account. */
 
+	/* Open passwords file. */
+	if ((file = open("/etc/passwords", O_RDONLY)) == -1)
+	{
+		fprintf(stderr, "cannot open password file\n");
+	} else {
+		/* Show all the passwords file. */
+		while (read(file, &a, sizeof(struct account)))
+		{
+			account_decrypt(a.name, USERNAME_MAX, KERNEL_HASH);
+			account_decrypt(a.password, PASSWORD_MAX, KERNEL_HASH);
+			printf("name: %s\n", a.name);
+			printf("password: %s\n", a.password);
+			printf("uid: %d\n", a.uid);
+			printf("gid: %d\n", a.gid);
+		}
+	}
+}
 
 /*
  * Prints program version and exits.
@@ -80,7 +97,7 @@ int main(int argc, char *const argv[])
 {
     getargs(argc, argv);
 
-    accdump();
+    showacc();
 
     return (EXIT_SUCCESS);
 
