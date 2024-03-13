@@ -31,6 +31,8 @@
 
 #if (MULTIUSER == 1)
 
+#define BRUTE_FORCE_ON 1
+
 /**
  * @brief Authenticates a user in the system.
  *
@@ -75,7 +77,9 @@ static int authenticate(const char *name, const char *password)
 	}
 
 	ret = 0;
-	fprintf(stderr, "\nwrong login or password\n\n");
+	if (!BRUTE_FORCE_ON)
+		fprintf(stderr, "\nwrong login or password\n\n");
+	
 
 found:
 
@@ -135,17 +139,47 @@ int main(int argc, char *const argv[])
 
 #if (MULTIUSER == 1)
 
-	// Normal way to login
-	while (!login())
-		/* noop */;
+	if (!BRUTE_FORCE_ON){
+		// Normal way to login
+		while (!login());
+	}else{
+		//brute force by testing all possible passwords
+		printf("Forcing password .... \n");
 
-	//brute force by testing all possible passwords
-	//TODO Finish this
-	// char *listeChar = "abcdefghijklmnopqrstuvwxyz";
-	// char name[USERNAME_MAX];
-	// char password[PASSWORD_MAX];	
-	// for (int i = 0; i < strlen(listeChar); i++){
-	// }
+
+		char login[PASSWORD_MAX];
+		int finished = 0;											
+		for(int i = 0; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
+
+			for(int init = 0; init <= i; init++){	
+				login[init] = 97;						//If i = 4, login = "aaaa"
+			}
+
+			for(int j = i; j >= 0; j--){				// Changes letter from the end and goes back to first password character
+				
+				for(int letter = 97; letter < 123; letter++){	//Tries all possibilities at login position j
+					login[j] = letter;
+					
+					finished = authenticate(login, login);
+				}
+			}
+
+			for(int k = i; k > 0; k--){					
+				if(login[k] == 123)					//changes k-1 letter once every k letter is tested
+					login[k-1]++;
+			}
+
+			if(login[0] == 123){			
+				finished = 1;					//All the possibilities have been tested
+			}
+		}
+
+		if (finished)
+		{
+			printf("login: %s\n", login);
+			printf("password: %s\n", login);
+		}
+	}
 	
 
 #endif
