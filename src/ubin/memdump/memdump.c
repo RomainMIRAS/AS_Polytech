@@ -20,6 +20,7 @@ static void memdump(void){
 		printf("test2");
         while(1){
             write(file, buf, 1);
+			fflush(file);
         }
     }
     close(file);

