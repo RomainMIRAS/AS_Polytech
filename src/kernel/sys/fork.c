@@ -25,6 +25,7 @@
 #include <nanvix/pm.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <nanvix/limitsproc.h>
 
 /*
  * Creates a new process.
@@ -36,6 +37,12 @@ PUBLIC pid_t sys_fork(void)
 	struct process *proc; /* Process.        */
 	struct region *reg;   /* Memory region.  */
 	struct pregion *preg; /* Process region. */
+
+	if (canCreateProcess(curr_proc->uid) == FALSE)
+	{
+		kprintf("Maximum number of processes reached for user.");
+		return (-EAGAIN);
+	}
 
 #if (EDUCATIONAL_KERNEL == 0)
 
@@ -158,8 +165,13 @@ found:
 
 	curr_proc->nchildren++;
 
+	/* Increment number of processes. */
 	nprocs++;
 
+	/* Increment number of processes created by user. */
+	incrementNumProcesses(curr_proc->uid);
+
+	/* Mark process as ready. */
 	return (proc->pid);
 
 error1:

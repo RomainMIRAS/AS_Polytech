@@ -27,6 +27,7 @@
 #include <nanvix/mm.h>
 #include <nanvix/syscall.h>
 #include <fcntl.h>
+#include <nanvix/limitsproc.h>
 
 /**
  * @brief Forks the current process.
@@ -121,6 +122,7 @@ PUBLIC void kmain(void)
 	mm_init();
 	pm_init();
 	fs_init();
+	initLimitsUserProcess();
 
 	chkout(DEVID(TTY_MAJOR, 0, CHRDEV));
 	kprintf(KERN_INFO "kout is now initialized");
