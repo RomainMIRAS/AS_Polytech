@@ -17,7 +17,7 @@ static void memdump(void){
 	printf("test");
     FILE * file;
     char * buf = "9";
-    if((file = fopen("memory_dump", 'w')) == -1){
+    if((file = fopen("memory_dump", 'w')) == 1){
 		printf("test2");
         while(1){
             fputs(buf, file);
