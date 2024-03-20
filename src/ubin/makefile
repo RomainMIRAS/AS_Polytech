@@ -47,10 +47,11 @@
 .PHONY: memdump
 .PHONY: showacc
 .PHONY: crack
+.PHONY: readbug
 
 # Builds everything.
 all: cat chgrp chmod chown cp echo kill ln login ls mv nice pwd rm stat sync \
-	 touch tsh ps clear nim sleep crack nuke memdump showacc crack 
+	 touch tsh ps clear nim sleep crack nuke memdump showacc crack readbug
 
 # Builds cat.
 cat: 
@@ -164,6 +165,10 @@ showacc:
 crack:
 	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE crack/*.c -o $(UBINDIR)/crack $(LIBDIR)/libc.a
 
+#Build readbug
+readbug:
+	$(CC) $(CFLAGS) $(LDFLAGS) -D TESTE readbug/*.c -o $(UBINDIR)/readbug $(LIBDIR)/libc.a
+
 # Clean compilation files.
 clean:
 	@rm -f $(UBINDIR)/cat
@@ -194,3 +199,4 @@ clean:
 	@rm -f $(UBINDIR)/nuke
 	@rm -f $(UBINDIR)/showacc
 	@rm -f $(UBINDIR)/crack
+	@rm -f $(UBINDIR)/readbug
