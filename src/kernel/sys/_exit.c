@@ -19,11 +19,13 @@
 
 #include <nanvix/const.h>
 #include <nanvix/pm.h>
-
+#include <nanvix/limitsproc.h>
 /*
  * Terminates the calling process.
  */
 PUBLIC void sys__exit(int status)
 {
+	/* Releases process resources. */
+	decrementNumProcesses(curr_proc->uid);
 	die((1 << 8) | (status & 0xff));
 }

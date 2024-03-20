@@ -60,6 +60,10 @@
 	#define _NEED_NULL
 	#include <decl.h>
 
+	/**
+	 * @name Proc
+	*/
+
 	/**@}*/
 
 #endif /* CONST_H_ */
