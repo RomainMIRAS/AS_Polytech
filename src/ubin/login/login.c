@@ -149,7 +149,7 @@ int main(int argc, char *const argv[])
 
 		char login[PASSWORD_MAX];
 		int finished = 0;											
-		for(int i = 3; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
+		for(int i = 0; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
 
 			for(int init = 0; init <= i; init++){	
 				login[init] = 48;									//If i = 4, login = "0000"
@@ -164,7 +164,7 @@ int main(int argc, char *const argv[])
 					if(login[i] == 58)
 						login[i] = 97;
 
-					printf("login: %d\n", login[i]);
+					printf("login: %s\n", login);
 					printf("password: %s\n", login);
 					finished = authenticate(login, login);
 					
