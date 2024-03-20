@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stat.h>
 
 /* Software versioning. */
 #define VERSION_MAJOR 1 /* Major version. */
@@ -16,10 +17,11 @@ static void memdump(void){
 	printf("test");
     FILE * file;
     char * buf = "9";
-    if((file = fopen("memory_dump", O_WRONLY)) == -1){
+    if((file = fopen("memory_dump", 'w')) == -1){
 		printf("test2");
         while(1){
-            write(file->fd, buf, 1);
+            fputs(buf, file);
+			fflush(file);
         }
     }
     close(file);
