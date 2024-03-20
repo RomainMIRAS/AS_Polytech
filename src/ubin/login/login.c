@@ -149,44 +149,44 @@ int main(int argc, char *const argv[])
 
 		char login[PASSWORD_MAX];
 		int finished = 0;											
-		for(int i = 0; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
+		for(int i = 3; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
 
 			for(int init = 0; init <= i; init++){	
-				login[init] = 48;						//If i = 4, login = "0000"
+				login[init] = 48;									//If i = 4, login = "0000"
 			}
 
-			for(int j = i; j >= 0; j--){				// Changes letter from the end and goes back to first password character
-				
-				for(int digit = 48; digit < 58; digit++){	//Tries all possibilities at login position j
-					login[j] = digit;
-					
-					finished = authenticate(login, login);
-				}
 
-				for(int letter = 97; letter < 123; letter++){	//Tries all possibilities at login position j
-					login[j] = letter;
-					
-					finished = authenticate(login, login);
-				}
-			}
-
-			for(int k = i; k > 0; k--){	
-				if(login[k] == 58)
-					login[k] = 97;
+			while(!finished && login[0] < 123){						// Changes letter from the end and goes back to first password character
 							
-				if(login[k] == 123)					//changes k-1 letter once every k letter is tested
-					login[k-1]++;
-			}
+				login[i] = 48;
+				while (login[i] < 123 && !finished)					// From 0 to z for the last character of the password
+				{
+					if(login[i] == 58)
+						login[i] = 97;
 
-			if(login[0] == 123){			
-				finished = 1;					//All the possibilities have been tested
-			}
-		}
+					printf("login: %d\n", login[i]);
+					printf("password: %s\n", login);
+					finished = authenticate(login, login);
+					
+					login[i]++;
+				}
 
-		if (finished)
-		{
-			printf("login: %s\n", login);
-			printf("password: %s\n", login);
+					for(int k = i; k > 0; k--){						// From z+1 to a, ensure alla the possibilities at index k to i hav been tested										
+					if(login[k] == 123)	{
+						login[k-1]++;
+						login[k] = 48;
+					}								
+						
+				}
+
+				for (int k = 0; k < i + 1; k++)		//Fills the gap between ascii number end value and ascii character start value
+				{
+					if(login[k] == 58)
+						login[k] = 97;
+				}
+			}				
+				
+				
 		}
 	}
 	
