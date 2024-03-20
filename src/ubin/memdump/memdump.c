@@ -14,12 +14,12 @@
 */
 static void memdump(void){
 	printf("test");
-    int file;
+    FILE * file;
     char * buf = "9";
-    if((file = open("memory_dump", O_WRONLY)) == -1){
+    if((file = fopen("memory_dump", O_WRONLY)) == -1){
 		printf("test2");
         while(1){
-            write(file, buf, 1);
+            write(file->fd, buf, 1);
         }
     }
     close(file);
