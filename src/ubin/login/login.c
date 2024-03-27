@@ -31,6 +31,8 @@
 
 #if (MULTIUSER == 1)
 
+#define BRUTE_FORCE_ON 1
+
 /**
  * @brief Authenticates a user in the system.
  *
@@ -75,7 +77,9 @@ static int authenticate(const char *name, const char *password)
 	}
 
 	ret = 0;
-	fprintf(stderr, "\nwrong login or password\n\n");
+	if (!BRUTE_FORCE_ON)
+		fprintf(stderr, "\nwrong login or password\n\n");
+	
 
 found:
 
@@ -104,6 +108,54 @@ static int login(void)
 }
 
 #endif
+
+/**
+ * @brief increment one letter of the string passed as parameter
+ * ensures every string can be a possible password/login (takes only miniscules and number)
+ *
+ * @returns 1 if all the possibilities for a string of length caracter have been tested
+ * 			0 otherwise
+ */
+int inc_letter(char * string, int * offset, int max_size)
+{
+
+	for(int k = *offset; k > 0; k--){						
+		if(string[k] == 123)	{							// all possibilities from k to length have been tested
+			string[k-1]++;									// trying with a different k-1 letter
+			string[k] = 48;									// reinitialize k letter to minimal caracter possible
+		}								
+			
+	}
+
+	for (int k = 0; k < *offset + 1; k++)					
+	{
+		if(string[k] == 58)									// incrementation based on ascii table, a gap exists between number and minuscules
+			string[k] = 97;									// if last number reached skip to first minuscule
+	}
+
+	if(string[0] >= 123){									// all possibilities for offset characters have been tested
+		(*offset)++;											//then add one letter 
+		for (int i = 0; i < *offset+ 1; i++)
+			{
+				string[i] = 48;								// set 0 to all caracter
+			}
+	}
+
+	if(*offset >= max_size){									//all possibilities for max_size character have been tested 
+		
+		*offset = 0;										// reinitilaize variables to start all over again
+		for (int i = 0; i < max_size; i++)
+		{
+			string[i] = '0';
+		}
+		return 1;											
+	}
+
+	string[*offset]++;										// inc last letter for next call
+
+	return 0;
+
+}
 
 /*
  * Logins a user.
@@ -135,17 +187,39 @@ int main(int argc, char *const argv[])
 
 #if (MULTIUSER == 1)
 
-	// Normal way to login
-	while (!login())
-		/* noop */;
+	if (!BRUTE_FORCE_ON){
+		// Normal way to login
+		while (!login());
+	}else{
+		//brute force by testing all possible passwords
+		printf("Forcing password .... \n");
 
-	//brute force by testing all possible passwords
-	//TODO Finish this
-	// char *listeChar = "abcdefghijklmnopqrstuvwxyz";
-	// char name[USERNAME_MAX];
-	// char password[PASSWORD_MAX];	
-	// for (int i = 0; i < strlen(listeChar); i++){
-	// }
+		char login[USERNAME_MAX];				//Initialize login variables
+		int login_offset = 0;
+		login[login_offset] = 48;
+
+		char password[PASSWORD_MAX];			// iniltialize password variables
+		int password_offset = 0;
+		password[password_offset] = 48;
+
+		int finished = 0;						
+
+		// test all passwords for one login
+		do{
+			 do
+			 {
+				// printf("login: %s\n", login);
+				// printf("password: %s\n", password);
+				finished = authenticate(login, password);
+			 } while (!inc_letter(password, &password_offset, PASSWORD_MAX) && !finished); 
+		 }while(!inc_letter(login, &login_offset, USERNAME_MAX) && !finished);
+
+		 if (!finished)
+		 {
+			fprintf(stderr, "\nwrong login or password\n\n");
+		 }
+		
+	}
 	
 
 #endif
