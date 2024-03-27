@@ -109,28 +109,35 @@ static int login(void)
 
 #endif
 
+/**
+ * @brief increment one letter of the string passed as parameter
+ * ensures every string can be a possible password/login (takes only miniscules and number)
+ *
+ * @returns 1 if all the possibilities for a string of length caracter have been tested
+ * 			0 otherwise
+ */
 int inc_letter(char * string, int * offset, int max_size)
 {
 
-	for(int k = *offset; k > 0; k--){						// From z+1 to a, ensure alla the possibilities at index k to i hav been tested										
-		if(string[k] == 123)	{
-			string[k-1]++;
-			string[k] = 48;
+	for(int k = *offset; k > 0; k--){						
+		if(string[k] == 123)	{							// all possibilities from k to length have been tested
+			string[k-1]++;									// trying with a different k-1 letter
+			string[k] = 48;									// reinitialize k letter to minimal caracter possible
 		}								
 			
 	}
 
-	for (int k = 0; k < *offset + 1; k++)					//Fills the gap between ascii number end value and ascii character start value
+	for (int k = 0; k < *offset + 1; k++)					
 	{
-		if(string[k] == 58)
-			string[k] = 97;
+		if(string[k] == 58)									// incrementation based on ascii table, a gap exists between number and minuscules
+			string[k] = 97;									// if last number reached skip to first minuscule
 	}
 
 	if(string[0] >= 123){									// all possibilities for offset characters have been tested
 		(*offset)++;											//then add one letter 
 		for (int i = 0; i < *offset+ 1; i++)
 			{
-				string[i] = 48;
+				string[i] = 48;								// set 0 to all caracter
 			}
 	}
 
@@ -139,7 +146,7 @@ int inc_letter(char * string, int * offset, int max_size)
 		*offset = 0;										// reinitilaize variables to start all over again
 		for (int i = 0; i < max_size; i++)
 		{
-			string[i] = 'z';
+			string[i] = '0';
 		}
 		return 1;											
 	}
@@ -187,75 +194,30 @@ int main(int argc, char *const argv[])
 		//brute force by testing all possible passwords
 		printf("Forcing password .... \n");
 
-
-		// char login[PASSWORD_MAX];
-		// int finished = 0;											
-		// for(int i = 0; i < PASSWORD_MAX && !finished; i++){			//Test password until max number of character possible per password
-
-		// 	for(int init = 0; init <= i; init++){	
-		// 		login[init] = 48;									//If i = 4, login = "0000"
-		// 	}
-
-
-		// 	while(!finished && login[0] < 123){						// Changes letter from the end and goes back to first password character
-							
-		// 		login[i] = 48;
-		// 		while (login[i] < 123 && !finished)					// From 0 to z for the last character of the password
-		// 		{
-		// 			if(login[i] == 58)
-		// 				login[i] = 97;
-
-		// 			printf("login: %s\n", login);
-		// 			printf("password: %s\n", login);
-		// 			finished = authenticate(login, login);
-					
-		// 			login[i]++;
-		// 		}
-
-		// 		for(int k = i; k > 0; k--){						// From z+1 to a, ensure alla the possibilities at index k to i hav been tested										
-		// 			if(login[k] == 123)	{
-		// 				login[k-1]++;
-		// 				login[k] = 48;
-		// 			}								
-						
-		// 		}
-
-		// 		for (int k = 0; k < i + 1; k++)		//Fills the gap between ascii number end value and ascii character start value
-		// 		{
-		// 			if(login[k] == 58)
-		// 				login[k] = 97;
-		// 		}
-		// 	}				
-				
-				
-		//}
-
-		char login[USERNAME_MAX];
+		char login[USERNAME_MAX];				//Initialize login variables
 		int login_offset = 0;
 		login[login_offset] = 48;
 
-		char password[PASSWORD_MAX];
+		char password[PASSWORD_MAX];			// iniltialize password variables
 		int password_offset = 0;
 		password[password_offset] = 48;
 
-		int finished = 0;
+		int finished = 0;						
 
+		// test all passwords for one login
 		do{
 			 do
 			 {
-				printf("login: %s\n", login);
-				printf("password: %s\n", password);
+				// printf("login: %s\n", login);
+				// printf("password: %s\n", password);
 				finished = authenticate(login, password);
-			 } while (!inc_letter(password, &password_offset, PASSWORD_MAX) && !finished);
+			 } while (!inc_letter(password, &password_offset, PASSWORD_MAX) && !finished); 
 		 }while(!inc_letter(login, &login_offset, USERNAME_MAX) && !finished);
 
 		 if (!finished)
 		 {
 			fprintf(stderr, "\nwrong login or password\n\n");
 		 }
-		 
-		
-		
 		
 	}
 	
